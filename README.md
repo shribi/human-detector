@@ -115,44 +115,6 @@ The system is designed for low-power, privacy-preserving perimeter monitoring wi
 
 ---
 
-# FreeRTOS Design
-
-The firmware is implemented using multiple cooperative tasks.
-
-## Radar Task
-
-- Polls the 24GHz radar
-- Detects human presence
-- Triggers recording events
-
-## Recording Task
-
-- Reads PCM samples from I2S
-- Stores audio into the circular ring buffer
-
-## Streaming Task
-
-- Sends PCM packets over WebSocket
-- Runs independently of audio capture
-
-This separation ensures that network latency never blocks audio acquisition.
-
----
-
-# Circular Ring Buffer
-
-Instead of allocating a large linear buffer or relying on queues, audio is continuously stored in a circular ring buffer.
-
-Advantages:
-
-- Constant memory usage
-- No dynamic allocation during recording
-- No packet loss due to queue overflow
-- Instant access to pre-trigger audio
-- Ideal for continuous audio capture
-
----
-
 # Backend
 
 The Go backend performs the following:
@@ -163,28 +125,6 @@ The Go backend performs the following:
 - Stores recordings
 - Sends Telegram alerts
 - Provides interfaces for AI analysis
-
----
-
-# Repository Structure
-
-```
-edge/
-├── firmware/
-├── drivers/
-├── websocket/
-├── audio/
-├── radar/
-└── FreeRTOS Tasks
-
-server/
-├── websocket/
-├── recorder/
-├── wav/
-├── telegram/
-├── storage/
-└── ai/
-```
 
 ---
 
@@ -201,9 +141,8 @@ server/
 
 # Future Improvements
 
-- Voice Activity Detection (VAD)
+- Improved Edge Logging
 - Bird/Animal/Human classification
-- On-device AI inference
 - Audio compression (Opus)
 - Cloud synchronization
 - Mobile application
