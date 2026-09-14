@@ -38,7 +38,6 @@ The system is designed for low-power, privacy-preserving perimeter monitoring wi
 | • Audio Packet Receiver                          |
 | • WAV File Generator                             |
 | • Telegram Notification                          |
-| • AI Processing Pipeline (Optional)              |
 +--------------------------------------------------+
 ```
 
