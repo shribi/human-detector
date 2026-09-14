@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -19,6 +20,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+
+	"github.com/joho/godotenv"
 )
 
 const (
@@ -27,14 +30,14 @@ const (
 	channels      = 1
 )
 
-const (
+var (
 	botToken = ""
 	keyID = ""
 	applicationKey = ""
 	bucket = ""
+	subscribers = []string{}
 )
 
-var subscribers = []string{}
 
 var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool {
@@ -82,6 +85,7 @@ var (
 	lastRecordingTime time.Time = time.Now().Add(-8 * time.Minute)
 	humanDetectionActive = false
 )
+
 
 func SignedURL(
 	key string,
@@ -304,6 +308,20 @@ func sendStartHumanDetectionCmd(conn *websocket.Conn) {
 }
 
 
+func initEnv() {
+	err := godotenv.Load() // loads .env from the current directory
+    if err != nil {
+		panic("Failed to load .env file")
+    }
+	
+	botToken = os.Getenv("TELEGRAM_BOT_TOKEN")
+	keyID = os.Getenv("DB_KEY_ID")
+	applicationKey = os.Getenv("DB_APPLICATION_KEY")
+	bucket = os.Getenv("DB_BUCKET_NAME")
+	subscribers = strings.Split(os.Getenv("TELEGRAM_BOT_CHAT_IDS"), ",")
+}
+
+
 func wsHandler(w http.ResponseWriter, req *http.Request) {
 	conn, err := upgrader.Upgrade(w, req, nil)
 	if err != nil {
@@ -319,6 +337,8 @@ func wsHandler(w http.ResponseWriter, req *http.Request) {
 	}
 	defer logFile.Close()
 	log.SetOutput(logFile)
+
+	initEnv()
 
 	rec := Recorder{}
 	s3Client, err = NewClient()

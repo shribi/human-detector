@@ -166,7 +166,3 @@ The Go backend performs the following:
 - System Architecture
 
 ---
-
-# License
-
-MIT License

@@ -1,0 +1,16 @@
+bin/
+*.exe
+*.test
+*.out
+
+# C specific
+*.o
+*.obj
+*.so
+*.dll
+*.dylib
+
+*.db
+*.env
+.vscode/
+.idea/
